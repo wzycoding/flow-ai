@@ -1,0 +1,10 @@
+#!/user/bin/env python
+# -*- coding: utf-8 -*-
+"""
+@Time   : 2025/3/7 
+@Author : wzy
+@File   : __init__.py
+"""
+from .wikipedia_search import wikipedia_search
+
+__all__ = ["wikipedia_search"]

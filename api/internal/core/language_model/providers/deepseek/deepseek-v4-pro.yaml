@@ -1,0 +1,22 @@
+model: deepseek-v4-pro
+label: deepseek-v4-pro
+model_type: chat
+features:
+  - tool_call
+  - agent_thought
+  - image_input
+context_window: 1000000
+max_output_tokens: 131072
+attributes:
+  model: deepseek-v4-pro
+parameters:
+  - name: max_tokens
+    use_template: max_tokens
+    default: 65536
+    max: 131072
+metadata:
+  pricing:
+    input: 0.002
+    output: 0.008
+    unit: 0.001
+    currency: RMB

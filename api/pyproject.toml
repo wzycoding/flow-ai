@@ -1,0 +1,69 @@
+[project]
+name = "flowai-llmops-api"
+version = "0.1.0"
+description = "Flask API service for the FlowAI LLMOps project."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "celery>=5.6.3",
+    "concurrent-log-handler>=0.9.28",
+    "cos-python-sdk-v5>=1.9.37",
+    "dashscope>=1.25.17",
+    "duckduckgo-search>=8.1.1",
+    "email-validator>=2.3.0",
+    "faiss-cpu==1.9.0",
+    "flask>=3.1.3",
+    "flask-cors>=6.0.1",
+    "flask-login>=0.6.3",
+    "flask-migrate>=4.1.0",
+    "flask-sqlalchemy>=3.1.1",
+    "flask-weaviate>=1.1.0",
+    "flask-wtf>=1.2.2",
+    "gunicorn>=23.0.0",
+    "injector>=0.22.0",
+    "jieba>=0.42.1",
+    "langchain==1.2.16",
+    "langchain-classic==1.0.4",
+    "langchain-community==0.4.1",
+    "langchain-core==1.3.2",
+    "langchain-deepseek==1.0.1",
+    "langchain-mcp-adapters==0.2.2",
+    "langchain-ollama==1.1.0",
+    "langchain-openai==1.2.1",
+    "langchain-text-splitters==1.1.2",
+    "langchain-weaviate==0.0.6",
+    "langgraph==1.1.10",
+    "langsmith==0.7.38",
+    "marshmallow>=3.18.0,<4.0.0",
+    "mistune>=3.1.4",
+    "pandas>=2.3.3",
+    "psycopg2-binary>=2.9.12",
+    "pydantic==2.13.3",
+    "pydantic-settings==2.14.0",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.2.2",
+    "python-pptx>=1.0.2",
+    "qianfan>=0.4.12.3",
+    "redis>=7.4.0",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.49",
+    "structlog>=25.4.0",
+    "tiktoken>=0.12.0",
+    "unstructured[docx,md]>=0.22.26",
+    "weaviate-client==4.21.0",
+    "wechatpy>=1.8.18",
+    "wikipedia>=1.4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "pytest-mock>=3.15.1",
+]
+
+[tool.uv]
+package = false
+override-dependencies = [
+    "numba==0.62.1; sys_platform == 'darwin'",
+    "llvmlite==0.45.1; sys_platform == 'darwin'",
+]

@@ -1,0 +1,91 @@
+{
+  "model_config": {
+    "provider": "tongyi",
+    "model": "qwen3.7-max",
+    "parameters": {
+      "temperature": 0.7,
+      "top_p": 0.85,
+      "frequency_penalty": 0.2,
+      "presence_penalty": 0.2,
+      "max_tokens": 8192
+    }
+  },
+  "dialog_round": 5,
+  "preset_prompt": "你是一个专业的AI助手，请用简洁友好的语言回答用户的问题。如果不确定答案，请如实告知。",
+  "tools": [
+    {
+      "type": "builtin_tool",
+      "provider_id": "google",
+      "tool_id": "google_serper",
+      "params": {}
+    },
+    {
+      "type": "builtin_tool",
+      "provider_id": "dalle",
+      "tool_id": "dalle3",
+      "params": {}
+    },
+    {
+      "type": "api_tool",
+      "provider_id": "internal-api",
+      "tool_id": "query_user_info",
+      "params": {
+        "base_url": "https://api.example.com",
+        "auth_token": "xxxxx"
+      }
+    },
+    {
+      "type": "mcp_tool",
+      "provider_id": "filesystem-mcp",
+      "tool_id": "read_file",
+      "params": {}
+    }
+  ],
+  "workflows": [
+    "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  ],
+  "datasets": [
+    "11111111-2222-3333-4444-555555555555",
+    "66666666-7777-8888-9999-aaaaaaaaaaaa"
+  ],
+  "retrieval_config": {
+    "retrieval_strategy": "hybrid",
+    "k": 5,
+    "score": 0.5
+  },
+  "long_term_memory": {
+    "enable": true
+  },
+  "opening_statement": "你好！我是你的AI助手，有什么可以帮你的吗？",
+  "opening_questions": [
+    "你能帮我做什么？",
+    "帮我搜索今天的新闻",
+    "介绍一下你的功能"
+  ],
+  "speech_to_text": {
+    "enable": true
+  },
+  "text_to_speech": {
+    "enable": true,
+    "voice": "nova",
+    "auto_play": false
+  },
+  "suggested_after_answer": {
+    "enable": true
+  },
+  "review_config": {
+    "enable": true,
+    "keywords": [
+      "暴力",
+      "赌博",
+      "毒品"
+    ],
+    "inputs_config": {
+      "enable": true,
+      "preset_response": "抱歉，您的输入包含敏感内容，无法处理。"
+    },
+    "outputs_config": {
+      "enable": true
+    }
+  }
+}

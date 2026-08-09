@@ -1,0 +1,29 @@
+# IDE配置相关
+.idea/
+.vscode/
+
+# 字节编译/优化/DLL文件
+__pycache__
+*.py[cod]
+*$py.class
+
+# API相关
+api/storage/log/
+api/storage/memory/
+api/tmp/
+api/venv/
+api/test/storage/
+api/.env
+
+# Docker环境变量配置文件（包含敏感信息）
+docker/.env
+docker/.env.development
+docker/.env.production
+docker/.env.local
+
+# UI相关
+ui/node_modules/
+ui/dist/
+
+# Docker容器相关
+api/docker/volumes/
