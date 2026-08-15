@@ -6,11 +6,11 @@ networks:
 
 services:
   llmops-ui:
-    image: llmops-ui:0.1.0
+    image: flow-ai-ui:0.1.0
     build:
       context: ../ui
       dockerfile: Dockerfile
-    container_name: llmops-ui
+    container_name: flow-ai-ui
     restart: always
     logging:
       driver: "json-file"
@@ -23,12 +23,12 @@ services:
     networks:
       - app-net
 
-  llmops-api:
-    image: llmops-api:0.1.0
+  flow-ai-api:
+    image: flow-ai-api:0.1.0
     build:
       context: ../api
       dockerfile: Dockerfile
-    container_name: llmops-api
+    container_name: flow-ai-api
     restart: always
     logging:
       driver: "json-file"
@@ -36,9 +36,9 @@ services:
         max-size: "50m"
         max-file: "3"
     volumes:
-      - /data/llmops/storage:/app/api/storage
+      - /data/flow-ai/storage:/app/api/storage
     env_file:
-      - /data/llmops/env/.env
+      - /data/flow-ai/env/.env
     environment:
       # 模式为API，代表启用API服务
       MODE: api
@@ -56,16 +56,16 @@ services:
       SQLALCHEMY_POOL_RECYCLE: ${SQLALCHEMY_RECYCLE:-3600}
       SQLALCHEMY_ECHO: ${SQLALCHEMY_ECHO:-false}
       # Redis缓存数据库配置
-      REDIS_HOST: ${REDIS_HOST:-llmops-redis}
+      REDIS_HOST: ${REDIS_HOST:-flow-ai-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_USERNAME: ${REDIS_USERNAME:-}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_DB: ${REDIS_DB:-0}
       REDIS_USE_SSL: ${REDIS_USE_SSL:-false}
       # Weaviate向量数据库配置
-      WEAVIATE_HTTP_HOST: ${WEAVIATE_HTTP_HOST:-llmops-weaviate}
+      WEAVIATE_HTTP_HOST: ${WEAVIATE_HTTP_HOST:-flow-ai-weaviate}
       WEAVIATE_HTTP_PORT: ${WEAVIATE_HTTP_PORT:-8080}
-      WEAVIATE_GRPC_HOST: ${WEAVIATE_GRPC_HOST:-llmops-weaviate}
+      WEAVIATE_GRPC_HOST: ${WEAVIATE_GRPC_HOST:-flow-ai-weaviate}
       WEAVIATE_GRPC_PORT: ${WEAVIATE_GRPC_PORT:-50051}
       WEAVIATE_API_KEY: ${WEAVIATE_API_KEY}
       # 腾讯云COS对象存储
@@ -118,18 +118,18 @@ services:
     ports:
       - "5001:5001"
     depends_on:
-      - llmops-db
-      - llmops-redis
-      - llmops-weaviate
+      - flow-ai-db
+      - flow-ai-redis
+      - flow-ai-weaviate
     networks:
       - app-net
 
-  llmops-celery:
-    image: llmops-api:0.1.0
+  flow-ai-celery:
+    image: flow-ai-api:0.1.0
     build:
       context: ../api
       dockerfile: Dockerfile
-    container_name: llmops-celery
+    container_name: flow-ai-celery
     restart: always
     logging:
       driver: "json-file"
@@ -137,9 +137,9 @@ services:
         max-size: "50m"
         max-file: "3"
     volumes:
-      - /data/llmops/storage:/app/api/storage
+      - /data/flow-ai/storage:/app/api/storage
     env_file:
-      - /data/llmops/env/.env
+      - /data/flow-ai/env/.env
     environment:
       # 模式为celery，代表启用Celery异步任务队列
       MODE: celery
@@ -156,16 +156,16 @@ services:
       SQLALCHEMY_POOL_RECYCLE: ${SQLALCHEMY_RECYCLE:-3600}
       SQLALCHEMY_ECHO: ${SQLALCHEMY_ECHO:-false}
       # Redis缓存数据库配置
-      REDIS_HOST: ${REDIS_HOST:-llmops-redis}
+      REDIS_HOST: ${REDIS_HOST:-flow-ai-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_USERNAME: ${REDIS_USERNAME:-}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_DB: ${REDIS_DB:-0}
       REDIS_USE_SSL: ${REDIS_USE_SSL:-false}
       # Weaviate向量数据库配置
-      WEAVIATE_HTTP_HOST: ${WEAVIATE_HTTP_HOST:-llmops-weaviate}
+      WEAVIATE_HTTP_HOST: ${WEAVIATE_HTTP_HOST:-flow-ai-weaviate}
       WEAVIATE_HTTP_PORT: ${WEAVIATE_HTTP_PORT:-8080}
-      WEAVIATE_GRPC_HOST: ${WEAVIATE_GRPC_HOST:-llmops-weaviate}
+      WEAVIATE_GRPC_HOST: ${WEAVIATE_GRPC_HOST:-flow-ai-weaviate}
       WEAVIATE_GRPC_PORT: ${WEAVIATE_GRPC_PORT:-50051}
       WEAVIATE_API_KEY: ${WEAVIATE_API_KEY}
       # 腾讯云COS对象存储
@@ -216,23 +216,23 @@ services:
       # 邮箱白名单
       ALLOWED_EMAILS: ${ALLOWED_EMAILS:-}
     depends_on:
-      - llmops-db
-      - llmops-redis
-      - llmops-weaviate
+      - flow-ai-db
+      - flow-ai-redis
+      - flow-ai-weaviate
     networks:
       - app-net
 
-  llmops-redis:
+  flow-ai-redis:
     image: redis:6-alpine
     restart: always
-    container_name: llmops-redis
+    container_name: flow-ai-redis
     logging:
       driver: "json-file"
       options:
         max-size: "50m"
         max-file: "3"
     volumes:
-      - /data/llmops/redis:/data
+      - /data/flow-ai/redis:/data
     # 启动redis服务时配置
     command: redis-server --requirepass ${REDIS_PASSWORD}
     healthcheck:
@@ -242,10 +242,10 @@ services:
     networks:
       - app-net
 
-  llmops-db:
+  flow-ai-db:
     image: postgres:15-alpine
     restart: always
-    container_name: llmops-db
+    container_name: flow-ai-db
     logging:
       driver: "json-file"
       options:
@@ -255,11 +255,11 @@ services:
       # 配置默认的账户名、账户密码、默认数据库、数据存储的位置
       PGUSER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: llmops
+      POSTGRES_DB: flow-ai
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       # 将postgres数据挂载到本地./volumes/db/data上
-      - /data/llmops/postgres:/var/lib/postgresql/data/pgdata
+      - /data/flow-ai/postgres:/var/lib/postgresql/data/pgdata
       # 初始化脚本只有在空数据挂载的情况下才会触发执行(.sql/.sh等)，如果已经存在数据则不会执行
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
@@ -273,9 +273,9 @@ services:
     networks:
       - app-net
 
-  llmops-weaviate:
+  flow-ai-weaviate:
     image: semitechnologies/weaviate:1.28.4
-    container_name: llmops-weaviate
+    container_name: flow-ai-weaviate
     restart: always
     logging:
       driver: "json-file"
@@ -294,7 +294,7 @@ services:
       AUTHORIZATION_ADMINLIST_ENABLED: 'true'  # 启动AdminList授权方案
       AUTHORIZATION_ADMINLIST_USERS: ${WEAVIATE_API_USER}  # 使用AdminList方案时具有管理权限的用户
     volumes:
-      - /data/llmops/weaviate:/var/lib/weaviate
+      - /data/flow-ai/weaviate:/var/lib/weaviate
     ports:
       - "8080:8080"
       - "50051:50051"
