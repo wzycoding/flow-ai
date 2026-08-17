@@ -17,6 +17,8 @@ services:
       options:
         max-size: "50m"
         max-file: "3"
+    env_file:
+      - /data/flow-ai/env/.env
     environment: [ ]
     ports:
       - "3000:3000"
@@ -233,6 +235,8 @@ services:
         max-file: "3"
     volumes:
       - /data/flow-ai/redis:/data
+    env_file:
+      - /data/flow-ai/env/.env
     # 启动redis服务时配置
     command: redis-server --requirepass ${REDIS_PASSWORD}
     healthcheck:
@@ -251,6 +255,8 @@ services:
       options:
         max-size: "50m"
         max-file: "3"
+    env_file:
+      - /data/flow-ai/env/.env
     environment:
       # 配置默认的账户名、账户密码、默认数据库、数据存储的位置
       PGUSER: postgres
@@ -282,6 +288,8 @@ services:
       options:
         max-size: "50m"
         max-file: "3"
+    env_file:
+      - /data/flow-ai/env/.env
     environment:
       QUERY_DEFAULTS_LIMIT: 25  # 查询默认返回的数据条数
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'false'  # 需要授权才能和weaviate进行交互
