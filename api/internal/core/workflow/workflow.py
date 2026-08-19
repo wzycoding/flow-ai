@@ -71,7 +71,7 @@ class Workflow(BaseTool):
 
     @classmethod
     def _build_args_schema(cls, workflow_config: WorkflowConfig) -> type[BaseModel]:
-        """构建输入参数结构体"""
+        """构建输入参数结构体，为工作流工具构建参数结构"""
         # 1.提取开始节点的输入参数信息
         fields = {}
         inputs = next(
