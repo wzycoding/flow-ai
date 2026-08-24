@@ -194,7 +194,7 @@ docker compose up -d
 构建+启动（需要重新构建代码）
 
 ```
-docker compose --env-file /data/llmops/env/.env up -d --build
+docker compose --env-file /data/flow-ai/env/.env up -d --build
 ```
 
 停止容器（保留容器）
@@ -218,11 +218,11 @@ docker compose restart
 重启单个服务
 
 ```
-docker compose restart llmops-api
-docker compose restart llmops-celery
-docker compose restart llmops-redis
-docker compose restart llmops-db
-docker compose restart llmops-nginx
+docker compose restart flow-ai-api
+docker compose restart flow-ai-celery
+docker compose restart flow-ai-redis
+docker compose restart flow-ai-db
+docker compose restart flow-ai-nginx
 ```
 
 查看状态
@@ -240,12 +240,12 @@ docker compose logs -f
 看某个服务日志
 
 ```
-docker compose logs -f llmops-api
+docker compose logs -f flow-ai-api
 ```
 
 看最近100行日志
 
 ```
-docker compose logs -f --tail=100 llmops-api
+docker compose logs -f --tail=100 flow-ai-api
 ```
 
