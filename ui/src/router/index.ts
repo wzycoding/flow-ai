@@ -151,9 +151,15 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const publicRoutes = ['marketing-home', 'auth-login', 'auth-authorize']
+  const isLogin = auth.isLogin()
 
-  if (!auth.isLogin() && !publicRoutes.includes(to.name as string)) {
+  if (!isLogin && !publicRoutes.includes(to.name as string)) {
     return { path: '/auth/login' }
+  }
+
+  // 已登录且登录状态有效时，访问登录页直接跳转到登录后的主页
+  if (isLogin && to.name === 'auth-login') {
+    return { path: '/home' }
   }
 })
 export default router
