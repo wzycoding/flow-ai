@@ -66,6 +66,9 @@ def init_app(app: Flask):
                 _reorder_keys,                                      # request_id 显示在最前面
                 structlog.dev.ConsoleRenderer(sort_keys=False, exception_formatter=_rich_traceback),
             ],
+            # 普通 stdlib logging 记录不会经过 structlog.configure 的处理器链，
+            # 需要显式复用 shared_processors 才能获得时间、级别和 logger 名称。
+            foreign_pre_chain=shared_processors,
         )
     else:
         formatter = structlog.stdlib.ProcessorFormatter(
@@ -74,6 +77,7 @@ def init_app(app: Flask):
                 _reorder_keys,                                      # request_id 显示在最前面
                 structlog.processors.JSONRenderer(ensure_ascii=False),
             ],
+            foreign_pre_chain=shared_processors,
         )
 
     # 3.配置日志文件 handler（保留现有的按天轮转策略）
