@@ -172,49 +172,6 @@ onMounted(() => {
             </div>
           </td>
         </tr>
-        <tr class="border-b">
-          <td class="py-3 px-4 w-2/3">
-            <div class="flex items-center gap-2">
-              <a-avatar :size="36" shape="square" class="bg-green-100">
-                <icon-wechat :size="18" class="text-green-700" />
-              </a-avatar>
-              <div class="flex flex-col">
-                <div class="text-gray-700 font-semibold">微信公众号（订阅号、服务号）</div>
-                <div class="text-gray-500">接入微信公众号，自动回复用户消息，助理高效私域运营。</div>
-              </div>
-            </div>
-          </td>
-          <td class="py-3 px-4 w-1/12">
-            <a-tag v-if="wechat_config?.status !== 'configured'" color="gray" bordered>
-              <template #icon>
-                <icon-minus-circle />
-              </template>
-              未配置
-            </a-tag>
-            <a-tag v-else color="blue" bordered>
-              <template #icon>
-                <icon-check-circle-fill />
-              </template>
-              已配置
-            </a-tag>
-          </td>
-          <td class="py-3 px-4">
-            <div class="flex items-center gap-3">
-              <!-- 立即配置 -->
-              <a-button
-                :loading="getWechatConfigLoading"
-                type="primary"
-                class="rounded-lg px-2"
-                @click="handleShowWechatConfigModal"
-              >
-                <template #icon>
-                  <icon-settings />
-                </template>
-                立即配置
-              </a-button>
-            </div>
-          </td>
-        </tr>
         </tbody>
       </table>
     </a-spin>
