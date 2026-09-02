@@ -13,6 +13,7 @@ from flask.cli import with_appcontext
 
 from internal.extension.database_extension import db
 from internal.model import Account
+from internal.model.account import DEFAULT_ACCOUNT_AVATAR
 from pkg.password import hash_password, validate_password
 
 
@@ -35,7 +36,7 @@ def seed_default_account(email: str, password: str) -> None:
             account = Account(
                 email=email,
                 name=email.split("@", 1)[0],
-                avatar="",
+                avatar=DEFAULT_ACCOUNT_AVATAR,
             )
             db.session.add(account)
             db.session.flush()

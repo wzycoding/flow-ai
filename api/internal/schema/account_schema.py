@@ -12,6 +12,7 @@ from wtforms.validators import DataRequired, regexp, Length, URL
 
 from internal.lib.helper import datetime_to_timestamp
 from internal.model import Account
+from internal.model.account import DEFAULT_ACCOUNT_AVATAR
 from pkg.password import password_pattern
 
 
@@ -31,7 +32,7 @@ class GetCurrentUserResp(Schema):
             "id": data.id,
             "name": data.name,
             "email": data.email,
-            "avatar": data.avatar,
+            "avatar": data.avatar or DEFAULT_ACCOUNT_AVATAR,
             "last_login_at": datetime_to_timestamp(data.last_login_at),
             "last_login_ip": data.last_login_ip,
             "created_at": datetime_to_timestamp(data.created_at),

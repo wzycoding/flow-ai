@@ -16,6 +16,7 @@ from flask import request
 from injector import inject
 
 from internal.model import Account, AccountOAuth
+from internal.model.account import DEFAULT_ACCOUNT_AVATAR
 from pkg.password import hash_password, compare_password
 from pkg.sqlalchemy import SQLAlchemy
 from .base_service import BaseService
@@ -49,6 +50,8 @@ class AccountService(BaseService):
 
     def create_account(self, **kwargs) -> Account:
         """根据传递的键值对创建账号"""
+        if not kwargs.get("avatar"):
+            kwargs["avatar"] = DEFAULT_ACCOUNT_AVATAR
         return self.create(Account, **kwargs)
 
     def update_password(self, password: str, account: Account) -> Account:

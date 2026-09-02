@@ -24,6 +24,9 @@ from internal.extension.database_extension import db
 from .conversation import Conversation
 
 
+DEFAULT_ACCOUNT_AVATAR = "https://llmops.aiflowline.cn/0c4048f9-45e1-4a36-a4c2-4e11b53940e9"
+
+
 class Account(UserMixin, db.Model):
     """账号模型"""
     __tablename__ = "account"

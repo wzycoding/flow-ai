@@ -7,7 +7,7 @@ const initAccount = {
   id: '',
   name: '',
   email: '',
-  avatar: '',
+  avatar: 'https://llmops.aiflowline.cn/0c4048f9-45e1-4a36-a4c2-4e11b53940e9',
   last_login_ip: '',
   last_login_at: 0,
   created_at: 0,
