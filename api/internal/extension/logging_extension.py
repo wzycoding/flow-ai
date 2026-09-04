@@ -7,6 +7,7 @@
 """
 import logging
 import os.path
+import traceback as traceback_lib
 
 import structlog
 from rich.console import Console
@@ -16,14 +17,20 @@ from flask import Flask
 
 
 def _rich_traceback(sio, exc_info):
-    """自定义 rich traceback：保留局部变量但限制帧数，避免输出过长"""
+    """自定义 rich traceback：限制帧数且不展开局部变量，避免输出过长"""
     sio.write("\n")
     traceback = RichTraceback.from_exception(
         *exc_info,
-        show_locals=True,
+        # 局部变量可能包含请求体、模型配置或大体积中间结果，展开后会淹没真正的报错信息。
+        show_locals=False,
         max_frames=6,
     )
     Console(file=sio, color_system=None).print(traceback)
+
+
+def _format_traceback(exc_info):
+    """生成适合生产 JSON 日志的精简 traceback，不展开局部变量。"""
+    return "".join(traceback_lib.format_exception(*exc_info, limit=6)).rstrip()
 
 
 def _reorder_keys(logger, method_name, event_dict):
@@ -75,6 +82,8 @@ def init_app(app: Flask):
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys,                                      # request_id 显示在最前面
+                # 生产环境日志保留可检索的精简 traceback 文本，而不是直接序列化 exc_info 元组。
+                structlog.processors.ExceptionRenderer(exception_formatter=_format_traceback),
                 structlog.processors.JSONRenderer(ensure_ascii=False),
             ],
             foreign_pre_chain=shared_processors,
