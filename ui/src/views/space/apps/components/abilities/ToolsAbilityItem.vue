@@ -37,6 +37,10 @@ const {
 const { loading: getBuiltinToolLoading, builtin_tool, loadBuiltinTool } = useGetBuiltinTool()
 const { categories, loadCategories } = useGetCategories()
 const { builtin_tools, loadBuiltinTools } = useGetBuiltinTools()
+// 后端草稿配置返回的内置插件icon为相对路径，需要补全api前缀后再渲染
+const resolveIconUrl = (icon?: string) =>
+  icon?.startsWith('/') ? `${apiPrefix}${icon}` : icon
+
 const toolInfoModalVisible = ref(false)
 const toolInfoNavType = ref('info')
 const toolInfo = ref<Record<string, any>>({})
@@ -386,7 +390,7 @@ onMounted(() => {
               :size="36"
               shape="square"
               class="rounded flex-shrink-0"
-              :image-url="tool.provider.icon"
+              :image-url="resolveIconUrl(tool.provider.icon)"
             />
             <a-avatar v-else :size="36" shape="square" class="rounded flex-shrink-0 bg-gray-900 text-xs">
               MCP
@@ -452,7 +456,7 @@ onMounted(() => {
               v-if="toolInfo?.provider?.icon"
               :size="24"
               shape="circle"
-              :image-url="toolInfo?.provider?.icon"
+              :image-url="resolveIconUrl(toolInfo?.provider?.icon)"
             />
             <a-avatar v-else :size="24" shape="circle" class="bg-gray-900 text-[10px]">
               MCP

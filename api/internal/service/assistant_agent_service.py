@@ -156,8 +156,8 @@ class AssistantAgentService(BaseService):
     def load_assistant_agent_llm(self) -> BaseLanguageModel:
         """加载辅助Agent模型，避免把首页助手绑定到单一供应商。"""
         model_config: dict[str, Any] = {
-            "provider": os.getenv("ASSISTANT_AGENT_MODEL_PROVIDER", "openai"),
-            "model": os.getenv("ASSISTANT_AGENT_MODEL", "gpt-4o-mini"),
+            "provider": os.getenv("ASSISTANT_AGENT_MODEL_PROVIDER", "tongyi"),
+            "model": os.getenv("ASSISTANT_AGENT_MODEL", "qwen3.8-flash"),
             "parameters": {
                 "temperature": self._get_float_env("ASSISTANT_AGENT_TEMPERATURE", 0.8),
                 "max_tokens": self._get_int_env("ASSISTANT_AGENT_MAX_TOKENS", 1024),
