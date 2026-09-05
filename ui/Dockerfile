@@ -1,5 +1,5 @@
 # 使用官方 Node.js 镜像作为基础镜像
-FROM node:20 as builder
+FROM node:22.22.2 as builder
 
 # 设置工作目录
 WORKDIR /app/web
