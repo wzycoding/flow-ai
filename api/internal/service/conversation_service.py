@@ -6,6 +6,7 @@
 @File   : conversation_service
 """
 import logging
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from threading import Thread
@@ -52,9 +53,11 @@ class ConversationService(BaseService):
         prompt = ChatPromptTemplate.from_template(SUMMARIZER_TEMPLATE)
 
         # 2.构建大语言模型实例，并且将大语言模型的温度调低，降低幻觉的概率
-        llm = ChatDeepSeek(
-            model="deepseek-v4-flash",
-            temperature=0.5,
+        llm = ChatOpenAI(
+            model="qwen3.8-flash",
+            temperature=0,
+            openai_api_key=os.getenv("DASHSCOPE_API_KEY"),
+            openai_api_base=os.getenv("DASHSCOPE_API_BASE"),
         )
 
         # 3.构建链应用
@@ -117,16 +120,12 @@ class ConversationService(BaseService):
         ])
 
         # 2.构建大语言模型实例，并且将大语言模型的温度调低，降低幻觉的概率
-        llm = ChatDeepSeek(
-            model="deepseek-v4-flash",
+        llm = ChatOpenAI(
+            model="qwen3.8-flash",
             temperature=0,
-            model_kwargs={
-             "extra_body": {
-                 "thinking": {
-                     "type": "disabled"
-                 }
-             }
-        })
+            openai_api_key=os.getenv("DASHSCOPE_API_KEY"),
+            openai_api_base=os.getenv("DASHSCOPE_API_BASE"),
+        )
         structured_llm = llm.with_structured_output(SuggestedQuestions)
 
         # 3.构建链应用

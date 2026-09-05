@@ -1,5 +1,5 @@
-model: qwen3.6-flash
-label: qwen3.6-flash
+model: qwen3.8-flash
+label: qwen3.8-flash
 model_type: chat
 features:
   - tool_call
@@ -8,7 +8,7 @@ features:
 context_window: 32768
 max_output_tokens: 8192
 attributes:
-  model: qwen3.6-flash
+  model: qwen3.8-flash
   extra_body:
     enable_search: true
     search_options:

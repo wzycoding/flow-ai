@@ -1,6 +1,6 @@
 - name: tongyi
   label: 通义千问
-  description: 通义千问提供的模型，例如千问3.6-max、千问3.6-plus等。
+  description: 通义千问提供的模型，例如千问3.8-max、千问3.8-flash等。
   icon: icon.png
   background: "#FFFFFF"
   supported_model_types:
@@ -12,11 +12,11 @@
   background: "#FFFFF"
   supported_model_types:
     - chat
-- name: openai
-  label: OpenAI
-  description: OpenAI提供的模型，例如GPT-4o-mini和GPT-4o。
-  icon: icon.svg
-  background: "#E5E7EB"
-  supported_model_types:
-    - chat
-    - completion
+#- name: openai
+#  label: OpenAI
+#  description: OpenAI提供的模型，例如GPT-4o-mini和GPT-4o。
+#  icon: icon.svg
+#  background: "#E5E7EB"
+#  supported_model_types:
+#    - chat
+#    - completion
