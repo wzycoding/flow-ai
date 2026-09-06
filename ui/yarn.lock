@@ -887,10 +887,10 @@
   resolved "https://registry.npmmirror.com/@sindresorhus/merge-streams/-/merge-streams-4.0.0.tgz#abb11d99aeb6d27f1b563c38147a72d50058e339"
   integrity sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==
 
-"@tsconfig/node22@^22.0.0":
-  version "22.0.6"
-  resolved "https://registry.npmmirror.com/@tsconfig/node22/-/node22-22.0.6.tgz#43d46cfd2f492d19aa4f2fe75ecb81635c018aeb"
-  integrity sha512-/5thavHAnWDZwH2H6eEn/T8pBEBhtuKaWGMslsj82kJfvzQgOgEMK7X4goBbIUjgVtAzPTtM9Ml64LA0uxO6Iw==
+"@tsconfig/node22@22.0.0":
+  version "22.0.0"
+  resolved "https://registry.npmmirror.com/@tsconfig/node22/-/node22-22.0.0.tgz#0bdaf702f2b7594383d24d7b2b8d557dcfdca1ed"
+  integrity sha512-twLQ77zevtxobBOD4ToAtVmuYrpeYUh3qh+TEp+08IWhpsrIflVHqQ1F1CiPxQGL7doCdBIOOCF+1Tm833faNg==
 
 "@types/dagre@^0.7.54":
   version "0.7.54"
