@@ -18,7 +18,7 @@ from pkg.sqlalchemy import SQLAlchemy
 from .account_service import AccountService
 from .base_service import BaseService
 from .jwt_service import JWTService
-from ..exception import NotFoundException, ForbiddenException
+from ..exception import NotFoundException, FailException
 from ..model import AccountOAuth
 
 
@@ -75,7 +75,9 @@ class OAuthService(BaseService):
             if allowed_emails:
                 allowed_email_list = [e.strip().lower() for e in allowed_emails.split(",") if e.strip()]
                 if oauth_user_info.email.lower() not in allowed_email_list:
-                    raise ForbiddenException("该邮箱未在白名单中，无法注册")
+                    raise FailException(
+                        "当前项目为演示项目，如需查看使用效果，请添加微信号开白：qq842089160，谢谢！"
+                    )
 
         if not account_oauth:
             # 5.该授权认证方式是第一次登录，查询邮箱是否存在
