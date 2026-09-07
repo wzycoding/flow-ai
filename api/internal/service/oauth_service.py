@@ -76,7 +76,7 @@ class OAuthService(BaseService):
                 allowed_email_list = [e.strip().lower() for e in allowed_emails.split(",") if e.strip()]
                 if oauth_user_info.email.lower() not in allowed_email_list:
                     raise FailException(
-                        "当前项目为演示项目，如需查看使用效果，请添加微信号开白：qq842089160，谢谢！"
+                        "本项目为演示项目，首次使用需添加微信开通白名单：qq842089160，目前仅支持 GitHub 注册"
                     )
 
         if not account_oauth:
