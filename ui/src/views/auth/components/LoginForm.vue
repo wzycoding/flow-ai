@@ -128,6 +128,16 @@ const handleSubmit = async ({ errors }: { errors: Record<string, ValidatedError>
         </a-button>
       </a-space>
     </a-form>
+
+    <div
+      class="mt-5 flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2.5 text-left text-[13px] leading-5 text-amber-700 ring-1 ring-amber-200"
+    >
+      <icon-exclamation-circle-fill class="mt-0.5 shrink-0" />
+      <span
+        >本项目为演示项目，首次使用需添加微信开通白名单：<span class="font-semibold select-all whitespace-nowrap">qq842089160</span>，目前仅支持
+        GitHub 注册</span
+      >
+    </div>
   </div>
 </template>
 
