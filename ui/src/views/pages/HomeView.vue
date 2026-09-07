@@ -327,7 +327,7 @@ onMounted(async () => {
                     :enable_text_to_speech="true"
                     :agent_thoughts="item.agent_thoughts"
                     :answer="item.answer"
-                    :app="{ name: '辅助Agent' }"
+                    :app="{ name: '小助手' }"
                     :suggested_questions="item.id === message_id ? suggested_questions : []"
                     :loading="item.id === message_id && assistantAgentChatLoading"
                     :latency="item.latency"
@@ -384,7 +384,7 @@ onMounted(async () => {
           <!-- 右侧名称与消息 -->
           <div class="flex flex-col items-start gap-2">
             <!-- 应用名称 -->
-            <div class="text-gray-700 font-bold">辅助Agent</div>
+            <div class="text-gray-700 font-bold">小助手</div>
             <!-- AI消息 -->
             <div
                 class="bg-white border border-gray-200 text-gray-700 px-4 py-3 rounded-2xl break-all leading-7"

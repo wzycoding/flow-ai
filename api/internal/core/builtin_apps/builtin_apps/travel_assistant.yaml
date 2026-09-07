@@ -5,7 +5,7 @@ icon: "https://cdn.aiflowline.cn/2026/05/11/3540fd1c-feef-48c7-9282-fefb1de0da96
 description: "负责回答旅游行程的相关问题和推荐路线"
 model_config:
   provider: "tongyi"
-  model: "qwen3.7-max"
+  model: "qwen3.8-flash"
   parameters:
     temperature: 0.5
     top_p: 0.85
