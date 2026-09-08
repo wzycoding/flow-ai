@@ -83,7 +83,7 @@ onMounted(() => {
               <a-avatar
                 :size="40"
                 shape="square"
-                :style="{ backgroundColor: builtinTool.background }"
+                class="bg-white"
               >
                 <img
                   :src="`${apiPrefix}/builtin-tools/${builtinTool.name}/icon`"
@@ -139,7 +139,7 @@ onMounted(() => {
             <a-avatar
               :size="40"
               shape="square"
-              :style="{ backgroundColor: filterBuiltinTools[showIdx].background }"
+              class="bg-white"
             >
               <img
                 :src="`${apiPrefix}/builtin-tools/${filterBuiltinTools[showIdx].name}/icon`"

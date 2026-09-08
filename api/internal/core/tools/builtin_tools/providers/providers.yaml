@@ -2,14 +2,14 @@
   label: Google
   description: 谷歌服务提供商，涵盖了谷歌搜索等工具。
   icon: icon.svg
-  background: "#E5E7EB"
+  background: "#FFFFFF"
   category: search
   created_at: 1722498386
 - name: time
   label: 时间
   description: 一个用于获取当前时间的工具
   icon: icon.svg
-  background: "#E5E7EB"
+  background: "#FFFFFF"
   category: tool
   created_at: 1722498386
 - name: duckduckgo
@@ -23,14 +23,14 @@
   label: DALLE
   description: DALLE是一个文生图工具。
   icon: icon.png
-  background: "#E5E7EB"
+  background: "#FFFFFF"
   category: image
   created_at: 1722498386
 - name: gaode
   label: 高德工具包
   description: 内置了高德天气预报和ip查询功能。
   icon: icon.png
-  background: "#E5E7EB"
+  background: "#FFFFFF"
   category: tool
   created_at: 1722498386
 - name: wikipedia
