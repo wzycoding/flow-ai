@@ -46,27 +46,3 @@ params:
         label: "2"
       - value: 3
         label: "3"
-      - value: 4
-        label: "4"
-      - value: 5
-        label: "5"
-      - value: 6
-        label: "6"
-      - value: 7
-        label: "7"
-      - value: 8
-        label: "8"
-      - value: 9
-        label: "9"
-      - value: 10
-        label: "10"
-  - name: response_format
-    label: 返回格式
-    type: select
-    default: url
-    required: true
-    options:
-      - value: url
-        label: "图片URL"
-      - value: b64_json
-        label: "Base64编码"

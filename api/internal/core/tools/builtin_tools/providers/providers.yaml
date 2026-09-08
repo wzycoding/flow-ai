@@ -50,7 +50,7 @@
 - name: gptimage
   label: gpt_image生图
   description: 这是使用gpt_image模型生成图片的工具包，可以根据提示词生成图片。
-  icon: icon.png
+  icon: icon.svg
   background: "#FFFFFF"
   category: tool
   created_at: 1722498386
