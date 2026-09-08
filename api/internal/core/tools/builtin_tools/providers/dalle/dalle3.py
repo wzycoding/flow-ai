@@ -14,7 +14,7 @@ from internal.lib.helper import add_attribute
 
 
 class Dalle3ArgsSchema(BaseModel):
-    query: str = Field(description="输入应该是生成图像的文本提示(prompt)")
+    query: str = Field(description="输入生成图像的文本提示(prompt)")
 
 
 @add_attribute("args_schema", Dalle3ArgsSchema)

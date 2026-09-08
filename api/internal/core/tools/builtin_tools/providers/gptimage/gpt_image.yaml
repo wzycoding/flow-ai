@@ -1,0 +1,72 @@
+name: gpt_image
+label: 提示词生成图片
+description: 这是一款能将提示词生成图片的工具。
+params:
+  - name: size
+    label: 图片尺寸
+    type: select
+    default: 1024x1024
+    required: true
+    options:
+      - value: 1024x1024
+        label: "(方)1024x1024"
+      - value: 1024x1536
+        label: "(竖屏)1024x1536"
+      - value: 1536x1024
+        label: "(横屏)1536x1024"
+  - name: quality
+    label: 图片质量
+    type: select
+    default: standard
+    required: true
+    options:
+      - value: standard
+        label: "标准(default分组仅支持1K)"
+      - value: hd
+        label: "高清(需gpt-image分组支持)"
+  - name: style
+    label: 图片风格
+    type: select
+    default: vivid
+    required: true
+    options:
+      - value: vivid
+        label: "生动"
+      - value: natural
+        label: "自然"
+  - name: n
+    label: 生成数量
+    type: select
+    default: 1
+    required: true
+    options:
+      - value: 1
+        label: "1"
+      - value: 2
+        label: "2"
+      - value: 3
+        label: "3"
+      - value: 4
+        label: "4"
+      - value: 5
+        label: "5"
+      - value: 6
+        label: "6"
+      - value: 7
+        label: "7"
+      - value: 8
+        label: "8"
+      - value: 9
+        label: "9"
+      - value: 10
+        label: "10"
+  - name: response_format
+    label: 返回格式
+    type: select
+    default: url
+    required: true
+    options:
+      - value: url
+        label: "图片URL"
+      - value: b64_json
+        label: "Base64编码"
