@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// @ts-ignore
-import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { cloneDeep } from 'lodash'
@@ -90,7 +87,7 @@ const conversation = computed(() => {
 
 // 3.定义保存滚动高度函数
 const saveScrollHeight = () => {
-  scrollHeight.value = scroller.value.$el.scrollHeight
+  scrollHeight.value = scroller.value.scrollHeight
 }
 
 // 4.定义修改指定状态处理器
@@ -175,12 +172,25 @@ const addConversation = () => {
 }
 
 // 9.定义还原滚动高度函数
-const restoreScrollPosition = () => {
-  scroller.value.$el.scrollTop = scroller.value.$el.scrollHeight - scrollHeight.value
+const restoreScrollPosition = async () => {
+  // 等待新加载的消息渲染到DOM后再还原，否则scrollHeight还是旧值
+  await nextTick()
+  scroller.value.scrollTop = scroller.value.scrollHeight - scrollHeight.value
 }
 
+// 9.1 定义滚动到底部函数
+const scrollBottom = async () => {
+  await nextTick()
+  if (scroller.value) {
+    scroller.value.scrollTop = scroller.value.scrollHeight
+  }
+}
+
+// 9.2 消息倒序列表（缓存引用，避免每次渲染生成新数组）
+const messages_reversed = computed(() => messages.value.slice().reverse())
+
 // 10.定义滚动函数
-const handleScroll = async (event: UIEvent) => {
+const handleScroll = async (event: Event) => {
   const { scrollTop } = event.target as HTMLElement
   if (scrollTop <= 0 && !webAppChatLoading.value) {
     saveScrollHeight()
@@ -311,7 +321,7 @@ const handleSubmit = async () => {
       // 11.12 更新agent_thoughts
       messages.value[0].agent_thoughts = agent_thoughts
 
-      scroller.value.scrollToBottom()
+      scrollBottom()
     }
   })
 
@@ -334,7 +344,7 @@ const handleSubmit = async () => {
     // 11.16 判断是否开启建议问题生成，如果开启了则发起api请求获取数据
     if (web_app.value?.app_config?.suggested_after_answer.enable && message_id.value) {
       handleGenerateSuggestedQuestions(message_id.value)
-      setTimeout(() => scroller.value && scroller.value.scrollToBottom(), 100)
+      setTimeout(scrollBottom, 100)
     }
 
     // 11.17 判断是否自动播放
@@ -451,12 +461,7 @@ watch(
     } else if (newValue !== '') {
       // 15.3 选择了已有会话，获取对应会话的消息列表
       await loadConversationMessagesWithPage(newValue, true)
-      await nextTick(() => {
-        // 15.4 确保在视图更新完成后执行滚动操作
-        if (scroller.value) {
-          scroller.value.scrollToBottom()
-        }
-      })
+      await scrollBottom()
     }
 
     // 15.5 切换会话时停止播放音频
@@ -623,34 +628,24 @@ onUnmounted(() => {
         v-if="messages.length > 0"
         :class="`flex flex-col px-6 w-[600px] mx-auto ${image_urls.length > 0 ? 'h-[calc(100vh-220px)]' : 'h-[calc(100vh-170px)]'}`"
       >
-        <dynamic-scroller
-          ref="scroller"
-          :items="messages.slice().reverse()"
-          :min-item-size="1"
-          @scroll="handleScroll"
-          class="h-full scrollbar-w-none"
-        >
-          <template v-slot="{ item, active }">
-            <dynamic-scroller-item :item="item" :active="active" :data-index="item.id">
-              <div class="flex flex-col gap-6 py-6">
-                <human-message :query="item.query" :image_urls="item.image_urls" :account="accountStore.account" />
-                <ai-message
-                  :message_id="item.id"
-                  :enable_text_to_speech="web_app?.app_config?.text_to_speech?.enable"
-                  :agent_thoughts="item.agent_thoughts"
-                  :answer="item.answer"
-                  :app="{ name: web_app.name, icon: web_app.icon }"
-                  :suggested_questions="item.id === message_id ? suggested_questions : []"
-                  :loading="item.id === message_id && webAppChatLoading"
-                  :latency="item.latency"
-                  :total_token_count="item.total_token_count"
-                  @select-suggested-question="handleSubmitQuestion"
-                  message_class="max-w-[513px]"
-                />
-              </div>
-            </dynamic-scroller-item>
-          </template>
-        </dynamic-scroller>
+        <div ref="scroller" class="h-full overflow-y-auto scrollbar-w-none" @scroll="handleScroll">
+          <div v-for="item in messages_reversed" :key="item.id" class="flex flex-col gap-6 py-6">
+            <human-message :query="item.query" :image_urls="item.image_urls" :account="accountStore.account" />
+            <ai-message
+              :message_id="item.id"
+              :enable_text_to_speech="web_app?.app_config?.text_to_speech?.enable"
+              :agent_thoughts="item.agent_thoughts"
+              :answer="item.answer"
+              :app="{ name: web_app.name, icon: web_app.icon }"
+              :suggested_questions="item.id === message_id ? suggested_questions : []"
+              :loading="item.id === message_id && webAppChatLoading"
+              :latency="item.latency"
+              :total_token_count="item.total_token_count"
+              @select-suggested-question="handleSubmitQuestion"
+              message_class="max-w-[513px]"
+            />
+          </div>
+        </div>
         <!-- 停止调试会话 -->
         <div v-if="task_id && webAppChatLoading" class="h-[50px] flex items-center justify-center">
           <a-button :loading="stopWebAppChatLoading" class="rounded-lg px-2" @click="handleStop">

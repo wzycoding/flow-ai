@@ -1,8 +1,5 @@
 <script setup lang="ts">
-// @ts-ignore
-import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import {
   useAssistantAgentChat,
   useDeleteAssistantAgentConversation,
@@ -57,16 +54,29 @@ const {
 
 // 2.定义保存滚动高度函数
 const saveScrollHeight = () => {
-  scrollHeight.value = scroller.value.$el.scrollHeight
+  scrollHeight.value = scroller.value.scrollHeight
 }
 
 // 3.定义还原滚动高度函数
-const restoreScrollPosition = () => {
-  scroller.value.$el.scrollTop = scroller.value.$el.scrollHeight - scrollHeight.value
+const restoreScrollPosition = async () => {
+  // 等待新加载的消息渲染到DOM后再还原，否则scrollHeight还是旧值
+  await nextTick()
+  scroller.value.scrollTop = scroller.value.scrollHeight - scrollHeight.value
 }
 
+// 3.1 定义滚动到底部函数（普通滚动容器版）
+const scrollBottom = async () => {
+  await nextTick()
+  if (scroller.value) {
+    scroller.value.scrollTop = scroller.value.scrollHeight
+  }
+}
+
+// 3.2 消息倒序列表（缓存引用，避免每次渲染生成新数组）
+const messages_reversed = computed(() => messages.value.slice().reverse())
+
 // 4.定义滚动函数
-const handleScroll = async (event: UIEvent) => {
+const handleScroll = async (event: Event) => {
   const { scrollTop } = event.target as HTMLElement
   if (scrollTop <= 0 && !getAssistantAgentMessagesWithPageLoading.value) {
     saveScrollHeight()
@@ -189,14 +199,14 @@ const handleSubmit = async () => {
       // 5.16 更新agent_thoughts
       messages.value[0].agent_thoughts = agent_thoughts
 
-      scroller.value.scrollToBottom()
+      scrollBottom()
     }
   })
 
   // 5.7 发起API请求获取建议问题列表
   if (message_id.value) {
     await handleGenerateSuggestedQuestions(message_id.value)
-    setTimeout(() => scroller.value && scroller.value.scrollToBottom(), 100)
+    setTimeout(scrollBottom, 100)
   }
 }
 
@@ -290,12 +300,7 @@ const handleStopRecord = async () => {
 // 12.页面DOM加载完毕时初始化数据
 onMounted(async () => {
   await loadAssistantAgentMessages(true)
-  await nextTick(() => {
-    // 确保在视图更新完成后执行滚动操作
-    if (scroller.value) {
-      scroller.value.scrollToBottom()
-    }
-  })
+  await scrollBottom()
 })
 </script>
 
@@ -311,34 +316,28 @@ onMounted(async () => {
           v-if="messages.length > 0"
           :class="`flex flex-col px-6 ${image_urls.length > 0 ? 'h-[calc(100%-150px)] min-h-[calc(100vh-150px)]' : 'h-[calc(100%-100px)] min-h-[calc(100vh-100px)]'}`"
       >
-        <dynamic-scroller
-            ref="scroller"
-            :items="messages.slice().reverse()"
-            :min-item-size="1"
-            @scroll="handleScroll"
-            class="h-full scrollbar-w-none"
-        >
-          <template v-slot="{ item, active }">
-            <dynamic-scroller-item :item="item" :active="active" :data-index="item.id">
-              <div class="flex flex-col gap-6 py-6">
-                <human-message :query="item.query" :image_urls="item.image_urls" :account="accountStore.account" />
-                <ai-message
-                    :message_id="item.id"
-                    :enable_text_to_speech="true"
-                    :agent_thoughts="item.agent_thoughts"
-                    :answer="item.answer"
-                    :app="{ name: '小助手' }"
-                    :suggested_questions="item.id === message_id ? suggested_questions : []"
-                    :loading="item.id === message_id && assistantAgentChatLoading"
-                    :latency="item.latency"
-                    :total_token_count="item.total_token_count"
-                    message_class="bg-white"
-                    @select-suggested-question="handleSubmitQuestion"
-                />
-              </div>
-            </dynamic-scroller-item>
-          </template>
-        </dynamic-scroller>
+        <div ref="scroller" class="h-full overflow-y-auto scrollbar-w-none" @scroll="handleScroll">
+          <div
+              v-for="item in messages_reversed"
+              :key="item.id"
+              class="flex flex-col gap-6 py-6"
+          >
+            <human-message :query="item.query" :image_urls="item.image_urls" :account="accountStore.account" />
+            <ai-message
+                :message_id="item.id"
+                :enable_text_to_speech="true"
+                :agent_thoughts="item.agent_thoughts"
+                :answer="item.answer"
+                :app="{ name: '小助手' }"
+                :suggested_questions="item.id === message_id ? suggested_questions : []"
+                :loading="item.id === message_id && assistantAgentChatLoading"
+                :latency="item.latency"
+                :total_token_count="item.total_token_count"
+                message_class="bg-white"
+                @select-suggested-question="handleSubmitQuestion"
+            />
+          </div>
+        </div>
         <!-- 停止调试会话 -->
         <div
             v-if="task_id && assistantAgentChatLoading"
