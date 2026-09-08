@@ -90,12 +90,16 @@ class ConversationInfo(BaseModel):
 
 
 # 建议问题提示词模板
-SUGGESTED_QUESTIONS_TEMPLATE = "请根据传递的历史信息预测人类最后可能会问的三个问题"
+SUGGESTED_QUESTIONS_TEMPLATE = (
+    "请根据传递的历史信息预测人类最后可能会问的三个问题。"
+    "要求：从用户视角出发、与AI回答内容相关、每个问题不超过50个字符。"
+    "必须仅输出json对象，包含questions字段，类型为字符串数组，"
+    '格式如：{{"questions": ["问题1", "问题2", "问题3"]}}'
+)
 
 
 class SuggestedQuestions(BaseModel):
-    """请帮我预测人类最可能会问的三个问题，并且每个问题都保持在50个字符以内。
-    生成的内容必须是指定模式的JSON格式数组: ["问题1", "问题2", "问题3"]"""
+    """建议问题结构化输出模型"""
     questions: list[str] = Field(description="建议问题列表，类型为字符串数组")
 
 

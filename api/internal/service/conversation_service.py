@@ -120,30 +120,32 @@ class ConversationService(BaseService):
         ])
 
         # 2.构建大语言模型实例，并且将大语言模型的温度调低，降低幻觉的概率
+        # 注：DashScope兼容模式不强制function calling（无strict约束），模型时而工具调用、
+        # 时而把JSON写进content、时而输出纯文本，function calling方式解析不稳定；
+        # json_mode是OpenAI协议通用能力，deepseek/openai等兼容网关同样支持
         llm = ChatOpenAI(
             model="qwen3.8-flash",
             temperature=0,
             openai_api_key=os.getenv("DASHSCOPE_API_KEY"),
             openai_api_base=os.getenv("DASHSCOPE_API_BASE"),
         )
-        structured_llm = llm.with_structured_output(SuggestedQuestions)
+        structured_llm = llm.with_structured_output(SuggestedQuestions, method="json_mode")
 
         # 3.构建链应用
         chain = prompt | structured_llm
 
         # 4.调用链并获取建议问题列表
-        suggested_questions = chain.invoke({"histories": histories})
-
-        # 5.提取建议问题列表
         questions = []
         try:
-            if suggested_questions and hasattr(suggested_questions, "questions"):
-                questions = suggested_questions.questions
+            suggested_questions = chain.invoke({"histories": histories})
+            questions = suggested_questions.questions
         except Exception as e:
             logging.exception(
-                "生成建议问题出错, suggested_questions: %(suggested_questions)s, 错误信息: %(error)s",
-                {"suggested_questions": suggested_questions, "error": e},
+                "生成建议问题出错, histories: %(histories)s, 错误信息: %(error)s",
+                {"histories": histories, "error": e},
             )
+        # 5.过滤空问题并限制最多3个
+        questions = [q for q in questions if isinstance(q, str) and q.strip()]
         if len(questions) > 3:
             questions = questions[:3]
 
