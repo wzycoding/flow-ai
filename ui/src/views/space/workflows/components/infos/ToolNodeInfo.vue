@@ -422,7 +422,7 @@ onMounted(() => {
                 v-if="form?.tool?.provider?.icon"
                 :size="36"
                 shape="square"
-                class="rounded flex-shrink-0"
+                class="rounded flex-shrink-0 bg-white"
                 :image-url="form?.tool?.provider?.icon"
               />
               <a-avatar
@@ -705,6 +705,7 @@ onMounted(() => {
                     <a-avatar
                       :size="20"
                       shape="circle"
+                      class="bg-white"
                       :image-url="`${apiPrefix}/builtin-tools/${builtin_tool.name}/icon`"
                     />
                     <div class="text-gray-900">{{ tool.label }}</div>

@@ -389,7 +389,7 @@ onMounted(() => {
               v-if="tool.provider.icon"
               :size="36"
               shape="square"
-              class="rounded flex-shrink-0"
+              class="rounded flex-shrink-0 bg-white"
               :image-url="resolveIconUrl(tool.provider.icon)"
             />
             <a-avatar v-else :size="36" shape="square" class="rounded flex-shrink-0 bg-gray-900 text-xs">
@@ -456,6 +456,7 @@ onMounted(() => {
               v-if="toolInfo?.provider?.icon"
               :size="24"
               shape="circle"
+              class="bg-white"
               :image-url="resolveIconUrl(toolInfo?.provider?.icon)"
             />
             <a-avatar v-else :size="24" shape="circle" class="bg-gray-900 text-[10px]">
@@ -715,6 +716,7 @@ onMounted(() => {
                     <a-avatar
                       :size="20"
                       shape="circle"
+                      class="bg-white"
                       :image-url="`${apiPrefix}/builtin-tools/${builtin_tool.name}/icon`"
                     />
                     <div class="text-gray-900">{{ tool.label }}</div>
