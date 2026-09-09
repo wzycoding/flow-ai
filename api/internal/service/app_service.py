@@ -5,26 +5,23 @@
 @Author  : wzy
 @File    : app_service.py
 """
-import io
 from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
-import requests
 from injector import inject
-from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel
 from internal.core.language_model.providers.tongyi.chat import Chat
 from redis import Redis
 from sqlalchemy import func, desc
-from werkzeug.datastructures import FileStorage
 
 from internal.core.language_model import LanguageModelManager
 from internal.core.language_model.entities.model_entity import ModelParameterType
 from internal.core.tools.api_tools.providers import ApiProviderManager
 from internal.core.tools.builtin_tools.providers import BuiltinProviderManager
+from internal.core.tools.builtin_tools.providers.gptimage.gpt_image import gpt_image
 from internal.entity.ai_entity import OPTIMIZE_PROMPT_TEMPLATE
 from internal.entity.app_entity import AppStatus, AppConfigType, DEFAULT_APP_CONFIG
 from internal.entity.app_entity import GENERATE_ICON_PROMPT_TEMPLATE
@@ -72,14 +69,13 @@ class AppService(BaseService):
         # 1.创建LLM，用于生成icon提示与预设提示词
         llm = Chat(model="qwen3.8-flash", temperature=0.8)
 
-        # 2.创建DallEApiWrapper包装器
-        dalle_api_wrapper = DallEAPIWrapper(model="dall-e-3", size="1024x1024")
-        gpt_image_tool =
+        # 2.实例化gpt_image工具，用于生成应用icon图标
+        gpt_image_tool = gpt_image(size="1024x1024", quality="standard", n=1)
 
-        # 3.构建生成icon链
+        # 3.构建生成icon链（工具内部会将生成的图片转存COS并返回COS地址）
         generate_icon_chain = ChatPromptTemplate.from_template(
             GENERATE_ICON_PROMPT_TEMPLATE
-        ) | llm | StrOutputParser() | dalle_api_wrapper.run
+        ) | llm | StrOutputParser() | gpt_image_tool
 
         # 4.生成预设prompt链
         generate_preset_prompt_chain = ChatPromptTemplate.from_messages([
@@ -94,19 +90,11 @@ class AppService(BaseService):
         })
         app_config = generate_app_config_chain.invoke({"name": name, "description": description})
 
-        # 6.将图片下载到本地后上传到腾讯云cos中
-        icon_response = requests.get(app_config.get("icon"))
-        if icon_response.status_code == 200:
-            icon_content = icon_response.content
-        else:
-            raise FailException("生成应用icon图标出错")
+        # 6.校验icon生成结果（工具失败时返回的是失败提示文案而非抛异常）
+        icon = str(app_config.get("icon", "")).strip()
+        if not icon.startswith("http"):
+            raise FailException(f"生成应用icon图标出错: {icon}")
         account = self.db.session.get(Account, account_id)
-        upload_file = self.cos_service.upload_file(
-            FileStorage(io.BytesIO(icon_content), filename="icon.png"),
-            True,
-            account,
-        )
-        icon = self.cos_service.get_file_url(upload_file.key)
 
         # 7.开启数据库自动提交上下文
         with self.db.auto_commit():
