@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import MarkdownIt from 'markdown-it'
+import { Message } from '@arco-design/web-vue'
 import DotFlashing from '@/components/DotFlashing.vue'
 import { useAudioPlayer } from '@/hooks/use-audio'
 import AgentThought from './AgentThought.vue'
@@ -37,6 +38,20 @@ const md = MarkdownIt()
 const compiledMarkdown = computed(() => {
   return md.render(props.answer)
 })
+
+// 复制消息内容到剪贴板，成功后图标短暂切换为对钩
+const copied = ref(false)
+let copied_timer: ReturnType<typeof setTimeout> | null = null
+const handleCopy = async () => {
+  try {
+    await navigator.clipboard.writeText(props.answer)
+    copied.value = true
+    if (copied_timer) clearTimeout(copied_timer)
+    copied_timer = setTimeout(() => { copied.value = false }, 2000)
+  } catch (err) {
+    Message.error(String(err))
+  }
+}
 </script>
 
 <template>
@@ -74,17 +89,29 @@ const compiledMarkdown = computed(() => {
       ></div>
       <!-- 消息展示与操作 -->
       <div class="w-full flex items-center justify-between">
-        <!-- 消息数据额外展示 -->
-        <a-space class="text-xs">
-          <template #split>
-            <a-divider direction="vertical" class="m-0" />
-          </template>
-          <div class="flex items-center gap-1 text-gray-500">
-            <icon-check />
-            {{ props.latency.toFixed(2) }}s
-          </div>
-          <div class="text-gray-500">{{ props.total_token_count }} Tokens</div>
-        </a-space>
+        <!-- 左侧：复制按钮+消息数据额外展示 -->
+        <div class="flex items-center gap-3">
+          <a-tooltip :content="copied ? '已复制' : '复制'" position="bottom">
+            <span class="flex items-center">
+              <icon-check v-if="copied" class="text-gray-500" />
+              <icon-copy
+                v-else
+                class="text-gray-400 cursor-pointer hover:text-gray-700"
+                @click="handleCopy"
+              />
+            </span>
+          </a-tooltip>
+          <a-space class="text-xs">
+            <template #split>
+              <a-divider direction="vertical" class="m-0" />
+            </template>
+            <div class="flex items-center gap-1 text-gray-500">
+              <icon-check />
+              {{ props.latency.toFixed(2) }}s
+            </div>
+            <div class="text-gray-500">{{ props.total_token_count }} Tokens</div>
+          </a-space>
+        </div>
         <!-- 播放音频&暂停播放 -->
         <div v-if="props.enable_text_to_speech" class="flex items-center gap-2">
           <template v-if="textToAudioLoading">
