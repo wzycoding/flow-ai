@@ -17,6 +17,8 @@ services:
       options:
         max-size: "50m"
         max-file: "3"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     env_file:
       - /data/flow-ai/env/.env
     environment: [ ]
@@ -39,6 +41,7 @@ services:
         max-file: "3"
     volumes:
       - /data/flow-ai/storage:/app/api/storage
+      - /etc/localtime:/etc/localtime:ro
     env_file:
       - /data/flow-ai/env/.env
     environment:
@@ -140,6 +143,7 @@ services:
         max-file: "3"
     volumes:
       - /data/flow-ai/storage:/app/api/storage
+      - /etc/localtime:/etc/localtime:ro
     env_file:
       - /data/flow-ai/env/.env
     environment:
@@ -235,6 +239,7 @@ services:
         max-file: "3"
     volumes:
       - /data/flow-ai/redis:/data
+      - /etc/localtime:/etc/localtime:ro
     env_file:
       - /data/flow-ai/env/.env
     # 启动redis服务时配置
@@ -268,6 +273,7 @@ services:
       - /data/flow-ai/postgres:/var/lib/postgresql/data/pgdata
       # 初始化脚本只有在空数据挂载的情况下才会触发执行(.sql/.sh等)，如果已经存在数据则不会执行
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /etc/localtime:/etc/localtime:ro
     healthcheck:
       # 每隔1s发起一个健康测试，最多重试30次
       test: [ "CMD", "pg_isready" ]
@@ -303,6 +309,7 @@ services:
       AUTHORIZATION_ADMINLIST_USERS: ${WEAVIATE_API_USER}  # 使用AdminList方案时具有管理权限的用户
     volumes:
       - /data/flow-ai/weaviate:/var/lib/weaviate
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "8080:8080"
       - "50051:50051"
