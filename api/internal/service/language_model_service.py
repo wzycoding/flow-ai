@@ -130,7 +130,7 @@ class LanguageModelService(BaseService):
         """加载默认的大语言模型，在模型管理器中获取不到模型或者出错时使用默认模型进行兜底"""
         # 1.获取千问服务提供者与模型类
         provider = self.language_model_manager.get_provider("tongyi")
-        model_entity = provider.get_model_entity("qwen3.7-max")
+        model_entity = provider.get_model_entity("qwen3.8-flash")
         model_class = provider.get_model_class(model_entity.model_type)
 
         # bug:原先写法使用的是LangChain封装的LLM类，需要替换成自定义封装的类，否则会识别到模型不存在features

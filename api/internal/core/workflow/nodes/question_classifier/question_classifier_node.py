@@ -6,6 +6,7 @@
 @File   : question_classifier_node
 """
 import json
+import os
 from typing import Optional
 
 from langchain_core.output_parsers import StrOutputParser
@@ -35,11 +36,13 @@ class QuestionClassifierNode(BaseNode):
             ("human", "{query}"),
         ])
 
-        # 3.创建LLM实例客户端，使用gpt-4o-mini作为基座模型，并配置温度与最大输出tokens
+        # 3.创建LLM实例客户端，使用qwen3.8-flash作为基座模型（DashScope兼容通道），并配置温度与最大输出tokens
         llm = ChatOpenAI(
-            model="gpt-4o-mini",
+            model="qwen3.8-flash",
             temperature=0,
             max_tokens=512,
+            openai_api_key=os.getenv("DASHSCOPE_API_KEY"),
+            openai_api_base=os.getenv("DASHSCOPE_API_BASE"),
         )
 
         # 4.构建分类链

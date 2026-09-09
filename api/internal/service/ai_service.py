@@ -53,7 +53,7 @@ class AIService(BaseService):
         ])
 
         # 2.构建LLM
-        llm = Chat(model="qwen3.7-max", temperature=0.5)
+        llm = Chat(model="qwen3.8-flash", temperature=0.5)
 
         # 3.组装优化链
         optimize_chain = prompt_template | llm | StrOutputParser()

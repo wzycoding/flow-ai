@@ -33,7 +33,7 @@ class AppConfigType(str, Enum):
 DEFAULT_APP_CONFIG = {
     "model_config": {
         "provider": "tongyi",
-        "model": "qwen3.7-max",
+        "model": "qwen3.8-flash",
         "parameters": {
             "temperature": 0.5,
             "top_p": 0.85,
