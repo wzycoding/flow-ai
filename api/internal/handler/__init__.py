@@ -26,6 +26,7 @@ from .openapi_handler import OpenAPIHandler
 from .platform_handler import PlatformHandler
 from .segment_handler import SegmentHandler
 from .upload_file_handler import UploadFileHandler
+from .usage_handler import UsageHandler
 from .web_app_handler import WebAppHandler
 from .wechat_handler import WechatHandler
 from .workflow_handler import WorkflowHandler
@@ -55,4 +56,5 @@ __all__ = [
     "AudioHandler",
     "PlatformHandler",
     "WechatHandler",
+    "UsageHandler",
 ]

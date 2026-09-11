@@ -37,6 +37,7 @@ from .process_rule_service import ProcessRuleService
 from .retrieval_service import RetrievalService
 from .segment_service import SegmentService
 from .upload_file_service import UploadFileService
+from .usage_service import UsageService
 from .vector_database_service import VectorDatabaseService
 from .web_app_service import WebAppService
 from .wechat_service import WechatService
@@ -79,4 +80,5 @@ __all__ = [
     "AudioService",
     "PlatformService",
     "WechatService",
+    "UsageService",
 ]

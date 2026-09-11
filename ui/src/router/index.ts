@@ -49,17 +49,20 @@ const router = createRouter({
         {
           path: 'space/datasets/:dataset_id/documents',
           name: 'space-datasets-documents-list',
-          component: () => import('@/views/space/datasets/documents/ListView.vue'),
+          component: () =>
+            import('@/views/space/datasets/documents/ListView.vue'),
         },
         {
           path: 'space/datasets/:dataset_id/documents/create',
           name: 'space-datasets-documents-create',
-          component: () => import('@/views/space/datasets/documents/CreateView.vue'),
+          component: () =>
+            import('@/views/space/datasets/documents/CreateView.vue'),
         },
         {
           path: 'space/datasets/:dataset_id/documents/:document_id/segments',
           name: 'space-datasets-documents-segments-list',
-          component: () => import('@/views/space/datasets/documents/segments/ListView.vue'),
+          component: () =>
+            import('@/views/space/datasets/documents/segments/ListView.vue'),
         },
         {
           path: 'store/apps',
@@ -70,6 +73,11 @@ const router = createRouter({
           path: 'store/tools',
           name: 'store-tools-list',
           component: () => import('@/views/store/tools/ListView.vue'),
+        },
+        {
+          path: 'billing/usage',
+          name: 'billing-usage-list',
+          component: () => import('@/views/billing/usage/ListView.vue'),
         },
         {
           path: 'openapi',

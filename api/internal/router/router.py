@@ -35,6 +35,7 @@ from internal.handler import (
     AudioHandler,
     PlatformHandler,
     WechatHandler,
+    UsageHandler,
 )
 
 
@@ -66,6 +67,7 @@ class Router:
     audio_handler: AudioHandler
     platform_handler: PlatformHandler
     wechat_handler: WechatHandler
+    usage_handler: UsageHandler
 
     def register_router(self, app: Flask):
         """注册路由"""
@@ -529,6 +531,9 @@ class Router:
             view_func=self.wechat_handler.wechat,
         )
 
-        # 19.在应用上注册蓝图
+        # 19.注册用量信息相关路由
+        bp.add_url_rule("/usages", view_func=self.usage_handler.get_usages_with_page)
+
+        # 20.在应用上注册蓝图
         app.register_blueprint(bp)
         app.register_blueprint(openapi_bp)

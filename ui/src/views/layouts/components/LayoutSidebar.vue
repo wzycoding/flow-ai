@@ -10,6 +10,8 @@ import IconToolFull from '@/components/icons/IconToolFull.vue'
 import IconTool from '@/components/icons/IconTool.vue'
 import IconApp from '@/components/icons/IconApp.vue'
 import IconOpenApiFull from '@/components/icons/IconOpenApiFull.vue'
+import IconUsage from '@/components/icons/IconUsage.vue'
+import IconUsageFull from '@/components/icons/IconUsageFull.vue'
 
 // 1.定义自定义组件所需数据
 const route = useRoute()
@@ -61,6 +63,16 @@ const route = useRoute()
       <icon-open-api-full v-if="route.path.startsWith('/openapi')" />
       <icon-open-api v-else />
       开放 API
+    </router-link>
+    <div class="text-gray-500 text-sm px-2">费用用量</div>
+    <router-link
+      to="/billing/usage"
+      class="flex items-center gap-2 h-8 leading-8 rounded-lg transition-all px-2 text-gray-700 hover:text-gray-900 hover:bg-gray-200"
+      active-class="bg-gray-100"
+    >
+      <icon-usage-full v-if="route.path.startsWith('/billing')" />
+      <icon-usage v-else />
+      用量信息
     </router-link>
   </div>
 </template>
