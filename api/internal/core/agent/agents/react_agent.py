@@ -186,9 +186,10 @@ class ReACTAgent(FunctionCallAgent):
             self.agent_queue_manager.publish_error(state["task_id"], "LLM未返回任何内容，请检查模型配置或重试")
             return {"messages": [], "iteration_count": state["iteration_count"] + 1}
 
-        # 8.计算LLM的输入+输出token总数
-        input_token_count = self.llm.get_num_tokens_from_messages(state["messages"])
-        output_token_count = self.llm.get_num_tokens_from_messages([gathered])
+        # 8.计算LLM的输入+输出token总数，优先使用服务商返回的真实usage，缺失时回退tiktoken估算
+        usage = gathered.usage_metadata or {}
+        input_token_count = usage.get("input_tokens") or self.llm.get_num_tokens_from_messages(state["messages"])
+        output_token_count = usage.get("output_tokens") or self.llm.get_num_tokens_from_messages([gathered])
 
         # 9.获取输入/输出价格和单位
         input_price, output_price, unit = self.llm.get_pricing()
