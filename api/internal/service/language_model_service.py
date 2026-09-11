@@ -14,6 +14,7 @@ from typing import Any
 from flask import current_app
 from injector import inject
 
+from internal.core.callback import UsageRecordHandler
 from internal.core.language_model import LanguageModelManager
 from internal.core.language_model.entities.model_entity import BaseLanguageModel
 from internal.exception import NotFoundException
@@ -102,8 +103,19 @@ class LanguageModelService(BaseService):
             byte_data = f.read()
             return byte_data, mimetype
 
-    def load_language_model(self, model_config: dict[str, Any]) -> BaseLanguageModel:
-        """根据传递的模型配置加载大语言模型，并返回其实例"""
+    def load_language_model(
+            self,
+            model_config: dict[str, Any],
+            usage_context: dict[str, Any] | None = None,
+    ) -> BaseLanguageModel:
+        """根据传递的模型配置加载大语言模型，并返回其实例。
+
+        Args:
+            model_config: 模型配置，含 provider/model/parameters。
+            usage_context: 可选的用量记录上下文，键对应 UsageRecordHandler 的
+                account_id/app_id/source，可选携带 flask_app（在无请求上下文场景下显式传入）。
+                传入后会为该模型实例挂载用量记录回调；不传则该实例不做任何记录，行为与改动前完全一致。
+        """
         try:
             # 1.从model_config中提取出provider、model、parameters
             provider_name = model_config.get("provider", "")
@@ -115,13 +127,29 @@ class LanguageModelService(BaseService):
             model_entity = provider.get_model_entity(model_name)
             model_class = provider.get_model_class(model_entity.model_type)
 
-            # 3.实例化模型后并返回
-            return model_class(
+            # 3.组装实例化参数
+            init_kwargs: dict[str, Any] = {
                 **model_entity.attributes,
                 **parameters,
-                features=model_entity.features,
-                metadata=model_entity.metadata,
-            )
+                "features": model_entity.features,
+                "metadata": model_entity.metadata,
+            }
+
+            # 4.传入了用量上下文才挂载用量记录回调，provider/model 名字在实例化时已知，闭包进回调。
+            #   flask_app 可由调用方显式传入（如工作流节点在构建期捕获，规避流式消费时上下文已销毁），
+            #   未传则回退到当前请求上下文的 current_app。
+            if usage_context:
+                flask_app = usage_context.get("flask_app") or current_app._get_current_object()
+                handler_kwargs = {k: v for k, v in usage_context.items() if k != "flask_app"}
+                init_kwargs["callbacks"] = [UsageRecordHandler(
+                    flask_app=flask_app,
+                    provider_name=provider_name,
+                    model_name=model_name,
+                    **handler_kwargs,
+                )]
+
+            # 5.实例化模型后并返回
+            return model_class(**init_kwargs)
         except Exception as error:
             logging.error("获取模型失败, 错误信息: %s", error, exc_info=True)
             raise

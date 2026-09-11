@@ -145,7 +145,14 @@ class Workflow(BaseTool):
             elif node.node_type == NodeType.LLM:
                 graph.add_node(
                     node_unique_id,
-                    self._wrap_runtime_node(node, NodeClasses[NodeType.LLM](node_data=node)),
+                    self._wrap_runtime_node(
+                        node,
+                        NodeClasses[NodeType.LLM](
+                            flask_app=current_app._get_current_object(),
+                            account_id=self._workflow_config.account_id,
+                            node_data=node,
+                        ),
+                    ),
                 )
             elif node.node_type == NodeType.TEMPLATE_TRANSFORM:
                 graph.add_node(

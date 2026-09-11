@@ -25,6 +25,7 @@ from internal.core.agent.entities.queue_entity import QueueEvent, queue_event_na
 from internal.core.language_model.entities.model_entity import BaseLanguageModel
 from internal.core.memory import TokenBufferMemory
 from internal.entity.conversation_entity import InvokeFrom, MessageStatus
+from internal.entity.usage_entity import UsageSource
 from internal.model import Account, Message
 from internal.schema.assistant_agent_schema import GetAssistantAgentMessagesWithPageReq, AssistantAgentChat
 from internal.task.app_task import auto_create_app
@@ -66,7 +67,11 @@ class AssistantAgentService(BaseService):
         )
 
         # 4.使用可配置模型作为辅助Agent的LLM大脑
-        llm = self.load_assistant_agent_llm()
+        llm = self.load_assistant_agent_llm(usage_context={
+            "account_id": account.id,
+            "app_id": None,
+            "source": UsageSource.ASSISTANT.value,
+        })
 
         # 5.实例化TokenBufferMemory用于提取短期记忆
         token_buffer_memory = TokenBufferMemory(
@@ -153,7 +158,7 @@ class AssistantAgentService(BaseService):
             agent_thoughts=[agent_thought for agent_thought in agent_thoughts.values()],
         )
 
-    def load_assistant_agent_llm(self) -> BaseLanguageModel:
+    def load_assistant_agent_llm(self, usage_context: dict[str, Any] | None = None) -> BaseLanguageModel:
         """加载辅助Agent模型，避免把首页助手绑定到单一供应商。"""
         model_config: dict[str, Any] = {
             "provider": os.getenv("ASSISTANT_AGENT_MODEL_PROVIDER", "tongyi"),
@@ -163,7 +168,7 @@ class AssistantAgentService(BaseService):
                 "max_tokens": self._get_int_env("ASSISTANT_AGENT_MAX_TOKENS", 1024),
             },
         }
-        return self.language_model_service.load_language_model(model_config)
+        return self.language_model_service.load_language_model(model_config, usage_context=usage_context)
 
     @staticmethod
     def _get_int_env(name: str, default: int) -> int:

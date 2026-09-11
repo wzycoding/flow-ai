@@ -24,6 +24,7 @@ from internal.entity.app_entity import AppStatus
 from internal.entity.conversation_entity import MessageStatus, InvokeFrom
 from internal.entity.dataset_entity import RetrievalSource
 from internal.entity.platform_entity import WechatConfigStatus
+from internal.entity.usage_entity import UsageSource
 from internal.exception import FailException
 from internal.model import App, WechatEndUser, EndUser, Message, WechatMessage, Conversation
 from pkg.sqlalchemy import SQLAlchemy
@@ -196,7 +197,14 @@ class WechatService(BaseService):
             try:
                 # 1.从语言模型中根据模型配置获取模型实例
                 app = self.get(App, app_id)
-                llm = self.language_model_service.load_language_model(app_config.get("model_config", {}))
+                llm = self.language_model_service.load_language_model(
+                    app_config.get("model_config", {}),
+                    usage_context={
+                        "account_id": app.account_id,
+                        "app_id": app_id,
+                        "source": UsageSource.APP.value,
+                    },
+                )
 
                 # 2.实例化TokenBufferMemory用于提取短期记忆
                 conversation = self.get(Conversation, conversation_id)

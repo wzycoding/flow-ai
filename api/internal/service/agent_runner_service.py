@@ -20,6 +20,7 @@ from internal.core.language_model.entities.model_entity import ModelFeature
 from internal.core.memory import TokenBufferMemory
 from internal.entity.conversation_entity import InvokeFrom, MessageStatus
 from internal.entity.dataset_entity import RetrievalSource
+from internal.entity.usage_entity import UsageSource
 from internal.model import Account, Conversation, Message
 from pkg.sqlalchemy import SQLAlchemy
 from redis import Redis
@@ -54,7 +55,12 @@ class AgentRunnerService(BaseService):
 
         # 1.加载大语言模型
         llm = self.language_model_service.load_language_model(
-            app_config.get("model_config", {})
+            app_config.get("model_config", {}),
+            usage_context={
+                "account_id": account_id,
+                "app_id": conversation.app_id,
+                "source": UsageSource.APP.value,
+            },
         )
         logger.info("llm_loaded", provider=app_config.get("model_config", {}).get("provider"), model=llm.model)
 
