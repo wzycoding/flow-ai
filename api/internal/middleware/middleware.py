@@ -19,7 +19,7 @@ from internal.service import JWTService, AccountService, ApiKeyService
 @inject
 @dataclass
 class Middleware:
-    """应用中间件，可以重新request_loader与unauthorized_handler"""
+    """应用中间件，可以重写request_loader与unauthorized_handler"""
     jwt_service: JWTService
     account_service: AccountService
     api_key_service: ApiKeyService
